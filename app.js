@@ -47,36 +47,32 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	document.onkeypress = function(event) {
 		// FIXME: when inserting text, disable cursor blinking..
-		// FIXME: switch..
-		// FIXME: handle BACKSPACE!
 
-		// Enter, create new line
-		if (event.keyCode == 13) {
-			var p = document.createElement("p");
-			p.innerText = prompt + text.innerText;
+		switch(event.keyCode) {
+			// Enter
+			case 13:
+				var p = document.createElement("p");
+				p.innerText = prompt + text.innerText;
 
-			display.appendChild(p);
-			executeCommand(display, text.innerText);
+				display.appendChild(p);
+				executeCommand(display, text.innerText);
 
-			text.innerText = "";
+				text.innerText = "";
+				break;
+			// Backspace / Delete
+			case 8:
+				break;
+			// Space
+			case 32:
+				text.innerText += "\u00A0";
+				break;
+			default:
+				var character = getChar(event || window.event);
+				// Any other special key
+				if (character) {
+					text.innerText += character;
+				}
+
 		}
-
-		// Backspace / delete
-		else if (event.keyCode == 8) {
-		}
-		// FIXME: also support TAB keycode 9
-		else if (event.keyCode == 32) {
-			text.innerText += "\u00A0";
-
-		} else  {
-			var char = getChar(event || window.event);
-			// Any other special key
-			if (!char) {
-				return;
-			}
-
-			text.innerText += char;
-		}
-
-	}
+	};
 });
