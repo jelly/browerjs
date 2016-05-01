@@ -45,6 +45,16 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}, 800);
 
+	document.onkeydown = function(event) {
+		if (event.keyCode == 8) {
+			event.preventDefault();
+
+			if (text.innerText.length > 0) {
+				text.innerText = text.innerText.slice(0, -1);
+			}
+		}
+	};
+
 	document.onkeypress = function(event) {
 		// FIXME: when inserting text, disable cursor blinking..
 
@@ -58,9 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
 				executeCommand(display, text.innerText);
 
 				text.innerText = "";
-				break;
-			// Backspace / Delete
-			case 8:
 				break;
 			// Space
 			case 32:
