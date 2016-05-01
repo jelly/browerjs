@@ -1,0 +1,20 @@
+body {
+	background-color: black;
+}
+
+span {
+	color: white;
+}
+
+.cursor-on {
+	background-color: white;
+}
+
+p {
+	margin: 0 0 0 0;
+	color: white;
+}
+
+#display {
+	display: block;
+}
