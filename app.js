@@ -27,7 +27,7 @@ function executeCommand(display, cmd) {
 
 				var elements = htmlDoc.getElementsByTagName('a');
 				for (var i = 0; i < elements.length; i++) {
-					text += " " + element[i].innerText;
+					text += " " + elements[i].innerText;
 				}
 
 				newline(display, text);
