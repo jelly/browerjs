@@ -31,11 +31,10 @@ function executeCommand(display, cmd) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  // FIXME: those globals..
-
-  var cursor = document.getElementById("cursor");
-  var display = document.getElementById("display");
-  var text = document.getElementById("text");
+	// FIXME: those globals..
+	var cursor = document.getElementById("cursor");
+	var display = document.getElementById("display");
+	var text = document.getElementById("text");
 
 	setInterval(function() {
 		if (cursor.className) {
@@ -46,19 +45,22 @@ document.addEventListener("DOMContentLoaded", function() {
 	}, 800);
 
 	document.onkeydown = function(event) {
-		if (event.keyCode == 8) {
-			event.preventDefault();
+		switch (event.keyCode) {
+			// Backspace
+			case 8:
+				event.preventDefault();
 
-			if (text.innerText.length > 0) {
-				text.innerText = text.innerText.slice(0, -1);
-			}
+				if (text.innerText.length > 0) {
+					text.innerText = text.innerText.slice(0, -1);
+				}
+			break;
 		}
 	};
 
 	document.onkeypress = function(event) {
 		// FIXME: when inserting text, disable cursor blinking..
 
-		switch(event.keyCode) {
+		switch (event.keyCode) {
 			// Enter
 			case 13:
 				var p = document.createElement("p");
