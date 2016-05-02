@@ -19,7 +19,7 @@ function executeCommand(display, cmd) {
 			}
 			break;
 		case "ls":
-			fetch(window.location.href, { method: 'get' }).then(function(response) {  return response.text(); }).then(function(content) { 
+			fetch(window.location.origin, { method: 'get' }).then(function(response) {  return response.text(); }).then(function(content) { 
 				parser = new DOMParser();
 				htmlDoc = parser.parseFromString(content, "text/html");
 
