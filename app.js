@@ -1,5 +1,5 @@
 // Globals for now..
-var prompt = "guest@title:/$ ";
+var user_prompt = "guest@title:/$ ";
 
 function getChar(event) {
 	return String.fromCharCode(event.keyCode || event.charCode);
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			// Enter
 			case 13:
 				var p = document.createElement("p");
-				p.innerText = prompt + text.innerText;
+				p.innerText = user_prompt + text.innerText;
 
 				display.appendChild(p);
 				executeCommand(display, text.innerText);
