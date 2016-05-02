@@ -19,7 +19,18 @@ function executeCommand(display, cmd) {
 			}
 			break;
 		case "ls":
-			newline(display, "blog index.html");
+			fetch(window.location.href, { method: 'get' }).then(function(response) {  return response.text(); }).then(function(content) { 
+				parser = new DOMParser();
+				htmlDoc = parser.parseFromString(content, "text/html");
+
+				var text = "";
+				for (var i = 0; i < elements.length; i++) {
+					text += " " + element[i].innerText;
+				}
+
+				newline(display, text);
+			});
+
 			break;
 		case "pwd":
 			newline(display, "/");
