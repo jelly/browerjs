@@ -24,6 +24,8 @@ function executeCommand(display, cmd) {
 				htmlDoc = parser.parseFromString(content, "text/html");
 
 				var text = "";
+
+				var elements = htmlDoc.getElementsByTagName('a');
 				for (var i = 0; i < elements.length; i++) {
 					text += " " + element[i].innerText;
 				}
