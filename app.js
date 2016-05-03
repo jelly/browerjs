@@ -1,5 +1,12 @@
 // Globals for now..
-var user_prompt = "guest@title:/$ ";
+path = "";
+var user_prompt = "guest@title:";
+
+function getPrompt() {
+	return "guest@title:/" + path + "$ ";
+}
+
+// Default PATH
 
 function getChar(event) {
 	return String.fromCharCode(event.keyCode || event.charCode);
@@ -11,31 +18,96 @@ function newline(element, text) {
 	element.appendChild(p);
 }
 
-function executeCommand(display, cmd) {
+function readfile(file, callback) {
+	file = window.location.origin + "/" + file;
+	fetch(file, { method: 'get' }).then(function(response) { 
+		return response.text(); 
+	}).then(function(content) { 
+		callback(content);
+	});
+}
+
+function readdir(directory, callback) {
+	directory = window.location.origin + "/" + directory;
+	fetch(directory, { method: 'get' }).then(function(response) {  return response.text(); }).then(function(content) { 
+		parser = new DOMParser();
+		htmlDoc = parser.parseFromString(content, "text/html");
+
+		var text = "";
+
+		var elements = htmlDoc.getElementsByTagName('a');
+
+		callback(elements);
+	});
+}
+
+function executeCommand(display, cmdstr) {
+	var args = cmdstr.split("\u00A0");
+	var cmd = args[0];
+	var arg;
+	if (args.length > 1) {
+		// Or .join()
+		arg = args[1];
+	}
+
 	switch(cmd) {
+		case "cat":
+			if (path !== "") {
+				arg = path + "/" + arg;
+			}
+			readfile(arg, function(text) {
+				if (text) {
+					newline(display, text);
+				}
+			});
+			break;
+		case "cd":
+			if (arg) {
+				if (path !== "") {
+					arg = path + "/" + arg;
+				}
+				readdir(arg, function(files) { 
+					// Change was succesful..
+					if (files.length >= 1) {
+						var user_prompt = document.getElementById("prompt");
+
+						path = arg;
+						user_prompt.innerText = getPrompt();
+
+						newline(display, "");
+					} else {
+						newline(display, "cd: no such file or directory: " + arg);
+					}
+
+				});
+			} else {
+				var user_prompt = document.getElementById("prompt");
+				path = "";
+				user_prompt.innerText = getPrompt();
+				newline(display, "");
+			}
+			break;
 		case "clear":
 			while(display.hasChildNodes()) {
 				display.removeChild(display.childNodes[0]);
 			}
 			break;
 		case "ls":
-			fetch(window.location.origin, { method: 'get' }).then(function(response) {  return response.text(); }).then(function(content) { 
-				parser = new DOMParser();
-				htmlDoc = parser.parseFromString(content, "text/html");
-
+			var dir = path; //window.location.origin;
+			if (arg) {
+				dir += "/" + arg;
+			}
+			readdir(dir, function(files) { 
 				var text = "";
-
-				var elements = htmlDoc.getElementsByTagName('a');
-				for (var i = 0; i < elements.length; i++) {
-					text += " " + elements[i].innerText;
+				for (var i = 0; i < files.length; i++) {
+					text += " " + files[i].innerText;
 				}
-
 				newline(display, text);
 			});
 
 			break;
 		case "pwd":
-			newline(display, "/");
+			newline(display, "/" + path);
 			break;
 		default:
 			newline(display, "-shelljs: " + cmd + ": command not found");
@@ -77,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			// Enter
 			case 13:
 				var p = document.createElement("p");
-				p.innerText = user_prompt + text.innerText;
+				p.innerText = getPrompt() + text.innerText;
 
 				display.appendChild(p);
 				executeCommand(display, text.innerText);
