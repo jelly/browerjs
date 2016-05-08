@@ -83,5 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 
 		}
+
+		cursor.scrollIntoView({block: "end", behavior: "smooth"});
 	};
 });
