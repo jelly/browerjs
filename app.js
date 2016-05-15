@@ -13,21 +13,21 @@ function newline(element, text) {
 
 function executeCommand(display, cmd) {
   switch (cmd) {
-  case 'clear':
-    while (display.hasChildNodes()) {
-      display.removeChild(display.childNodes[0]);
-    }
-  break;
-  case 'ls':
-    newline(display, 'blog index.html');
-  break;
-  case 'pwd':
-    newline(display, '/');
-  break;
-  default:
-    newline(display, '-shelljs: ' + cmd + ': command not found');
-  break;
-}
+    case 'clear':
+      while (display.hasChildNodes()) {
+        display.removeChild(display.childNodes[0]);
+      }
+    break;
+    case 'ls':
+      newline(display, 'blog index.html');
+    break;
+    case 'pwd':
+      newline(display, '/');
+    break;
+    default:
+      newline(display, '-shelljs: ' + cmd + ': command not found');
+    break;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
