@@ -1,5 +1,6 @@
 // Globals for now..
 var userPrompt = 'guest@title:/$ ';
+var path = '/';
 
 function getChar(event) {
   return String.fromCharCode(event.keyCode || event.charCode);
@@ -11,7 +12,46 @@ function newline(element, text) {
   element.appendChild(p);
 }
 
-function executeCommand(display, cmd) {
+function readdir(directory, callback) {
+  fetch(directory, {method: 'get'}).then(function(response) {
+    if (response.status === 200) {
+      return response.text();
+    } else {
+      return '';
+    }
+  }, function(resp) {console.log('failed'); }).then(function(content) {
+    var elements = [];
+
+    if (content !== '') {
+      parser = new DOMParser();
+      htmlDoc = parser.parseFromString(content, 'text/html');
+
+      var text = '';
+      elements = htmlDoc.getElementsByTagName('a');
+    }
+
+    callback(elements);
+  }, function(content) { console.log('failed'); });
+
+}
+
+function executeCommand(display, cmdstr) {
+  // Handle null string case.
+  if (cmdstr.length === 0) {
+    newline(display, '');
+    return;
+  }
+
+  var arg = '';
+  var args = cmdstr.split('\u00A0');
+
+  // TODO: handle multiple arguments?
+  if (args.length >= 2) {
+    arg = args[1];
+  }
+
+  var cmd = args[0];
+
   switch (cmd) {
     case 'clear':
       while (display.hasChildNodes()) {
@@ -19,10 +59,24 @@ function executeCommand(display, cmd) {
       }
     break;
     case 'ls':
-      newline(display, 'blog index.html');
+      var dir = window.location.origin + path + arg;
+      var text = '';
+
+      readdir(dir, function(files) {
+        for (var i = 0; i < files.length; i++) {
+          text += ' ' + files[i].innerText;
+        }
+
+        if (text === '') {
+          newline(display, 'ls: cannot access \'' + arg + '\': No such file or directory');
+        } else {
+          newline(display, text);
+        }
+      });
+
     break;
     case 'pwd':
-      newline(display, '/');
+      newline(display, path);
     break;
     default:
       newline(display, '-shelljs: ' + cmd + ': command not found');
