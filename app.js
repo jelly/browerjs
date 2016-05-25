@@ -108,6 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
           text.innerText = text.innerText.slice(0, -1);
         }
       break;
+      // Tab
+      case 9:
+        event.preventDefault();
+      break;
     }
   };
 
