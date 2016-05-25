@@ -53,6 +53,9 @@ function executeCommand(display, cmdstr) {
   var cmd = args[0];
 
   switch (cmd) {
+    case 'echo':
+      newline(display, arg);
+    break;
     case 'clear':
       while (display.hasChildNodes()) {
         display.removeChild(display.childNodes[0]);
