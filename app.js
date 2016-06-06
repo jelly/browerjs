@@ -14,7 +14,11 @@ function newline(element, text) {
 
 function readfile(file, callback) {
 	fetch(file, { method: 'get' }).then(function(response) { 
-		return response.text(); 
+    if (response.status === 200) {
+      return response.text(); 
+    } else {
+      return '';
+    }
 	}).then(function(content) { 
 		callback(content);
 	});
@@ -27,7 +31,7 @@ function readdir(directory, callback) {
     } else {
       return '';
     }
-  }, function(resp) {console.log('failed'); }).then(function(content) {
+  }, function(resp) { console.log('failed'); }).then(function(content) {
     var elements = [];
 
     if (content !== '') {
@@ -64,7 +68,9 @@ function executeCommand(display, cmdstr) {
     case 'cat':
       var file = window.location.origin + path + arg;
 			readfile(file, function(text) {
-        if (text) {
+        if (text === '') {
+          newline(display, 'cat: \'' + arg + '\': No such file or directory');
+        } else {
           newline(display, text);
         }
       });
