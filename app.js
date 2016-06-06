@@ -24,29 +24,6 @@ function readfile(file, callback) {
 	});
 }
 
-function readdir(directory, callback) {
-  fetch(directory, {method: 'get'}).then(function(response) {
-    if (response.status === 200) {
-      return response.text();
-    } else {
-      return '';
-    }
-  }, function(resp) { console.log('failed'); }).then(function(content) {
-    var elements = [];
-
-    if (content !== '') {
-      parser = new DOMParser();
-      htmlDoc = parser.parseFromString(content, 'text/html');
-
-      var text = '';
-      elements = htmlDoc.getElementsByTagName('a');
-    }
-
-    callback(elements);
-  }, function(content) { console.log('failed'); });
-
-}
-
 function executeCommand(display, cmdstr) {
   // Handle null string case.
   if (cmdstr.length === 0) {
@@ -85,17 +62,22 @@ function executeCommand(display, cmdstr) {
     break;
     case 'ls':
       var dir = window.location.origin + path + arg;
-      var text = '';
 
-      readdir(dir, function(files) {
-        for (var i = 0; i < files.length; i++) {
-          text += ' ' + files[i].innerText;
-        }
+      readfile(dir, function(content) {
 
-        if (text === '') {
-          newline(display, 'ls: cannot access \'' + arg + '\': No such file or directory');
-        } else {
+        if (content !== '') {
+          var text = '';
+          parser = new DOMParser();
+          htmlDoc = parser.parseFromString(content, 'text/html');
+
+          var elements = htmlDoc.getElementsByTagName('a');
+          for (var i = 0; i < elements.length; i++) {
+            text += ' ' + elements[i].innerText;
+          }
+
           newline(display, text);
+        } else {
+          newline(display, 'ls: cannot access \'' + arg + '\': No such file or directory');
         }
       });
 
