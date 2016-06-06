@@ -12,6 +12,14 @@ function newline(element, text) {
   element.appendChild(p);
 }
 
+function readfile(file, callback) {
+	fetch(file, { method: 'get' }).then(function(response) { 
+		return response.text(); 
+	}).then(function(content) { 
+		callback(content);
+	});
+}
+
 function readdir(directory, callback) {
   fetch(directory, {method: 'get'}).then(function(response) {
     if (response.status === 200) {
@@ -53,6 +61,14 @@ function executeCommand(display, cmdstr) {
   var cmd = args[0];
 
   switch (cmd) {
+    case 'cat':
+      var file = window.location.origin + path + arg;
+			readfile(file, function(text) {
+        if (text) {
+          newline(display, text);
+        }
+      });
+    break;
     case 'clear':
       while (display.hasChildNodes()) {
         display.removeChild(display.childNodes[0]);
