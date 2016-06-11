@@ -91,19 +91,20 @@ function executeCommand(display, cmdstr) {
   }
 }
 
+function cursorBlink() {
+  var cursor = document.getElementById('cursor');
+  if (cursor.className) {
+    cursor.className = '';
+  } else {
+    cursor.className = 'cursor-on';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   // FIXME: those globals..
-  var cursor = document.getElementById('cursor');
   var display = document.getElementById('display');
   var text = document.getElementById('text');
-
-  setInterval(function() {
-    if (cursor.className) {
-      cursor.className = '';
-    } else {
-      cursor.className = 'cursor-on';
-    }
-  }, 800);
+  var interval = setInterval(cursorBlink, 800);
 
   document.onkeydown = function(event) {
     switch (event.keyCode) {
@@ -123,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   document.onkeypress = function(event) {
-    // FIXME: when inserting text, disable cursor blinking..
+    clearInterval(interval);
 
     switch (event.keyCode) {
     // Enter
@@ -149,6 +150,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   }
 
-    cursor.scrollIntoView({block: 'end', behavior: 'smooth'});
+  interval = setInterval(cursorBlink, 800);
+  cursor.scrollIntoView({block: 'end', behavior: 'smooth'});
+
   };
 });
