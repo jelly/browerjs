@@ -125,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.onkeypress = function(event) {
     clearInterval(interval);
+    document.getElementById('cursor').className = 'cursor-on';
 
     switch (event.keyCode) {
     // Enter
