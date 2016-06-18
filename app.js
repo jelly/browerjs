@@ -1,7 +1,4 @@
-// Globals for now..
-var userPromptBegin = 'guest@title:';
-var userPromptEnd = '$ ';
-
+// Global current working directory variable
 var path = '/';
 
 function getChar(event) {
@@ -32,11 +29,11 @@ function readfile(file, callback) {
  *
  * Appended text is for example the output of a command.
  */
-function setPrompt(path, obj, appendText) {
-  var userPrompt = obj || document.getElementById('prompt');
+function setPrompt(path, userPrompt, appendText) {
+  userPrompt = userPrompt || document.getElementById('prompt');
   appendText = appendText || '';
 
-  userPrompt.innerText = userPromptBegin + path + userPromptEnd + appendText;
+  userPrompt.innerText = 'guest@title:' + path + '$ ' + appendText;
 }
 
 function executeCommand(display, cmdstr) {
