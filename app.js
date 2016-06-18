@@ -26,6 +26,19 @@ function readfile(file, callback) {
 	});
 }
 
+/**
+ * Set's the prompt text, optionally receives an DOM object obj and a
+ * text which is appended at the end of the prompt.
+ *
+ * Appended text is for example the output of a command.
+ */
+function setPrompt(path, obj, appendText) {
+  var userPrompt = obj || document.getElementById('prompt');
+  appendText = appendText || '';
+
+  userPrompt.innerText = userPromptBegin + path + userPromptEnd + appendText;
+}
+
 function executeCommand(display, cmdstr) {
   // Handle null string case.
   if (cmdstr.length === 0) {
@@ -63,7 +76,7 @@ function executeCommand(display, cmdstr) {
       // TODO: handle . and .. and "cd foo/"
       if (arg === '' || arg === '/') {
         path = '/';
-        document.getElementById('prompt').innerText = userPromptBegin + path + userPromptEnd;
+        setPrompt(path);
         break;
       }
 
@@ -83,7 +96,7 @@ function executeCommand(display, cmdstr) {
           } else {
             path = path + arg;
           }
-          document.getElementById('prompt').innerText = userPromptBegin + path + userPromptEnd;
+          setPrompt(path);
           newline(display, '');
         }
       });
@@ -168,9 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
     case 13:
       var p = document.createElement('p');
       if (path !== '/' && path.slice(-1) === '/') {
-       p.innerText = userPromptBegin + path.slice(0, path.length - 1) + userPromptEnd + text.innerText;
+        setPrompt(path.slice(0, path.length - 1), p, text.innerText);
       } else {
-       p.innerText = userPromptBegin + path + userPromptEnd + text.innerText;
+        setPrompt(path, p, text.innerText);
       }
 
       display.appendChild(p);
