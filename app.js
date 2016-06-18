@@ -1,5 +1,7 @@
 // Globals for now..
-var userPrompt = 'guest@title:/$ ';
+var userPromptBegin = 'guest@title:';
+var userPromptEnd = '$ ';
+
 var path = '/';
 
 function getChar(event) {
@@ -41,14 +43,48 @@ function executeCommand(display, cmdstr) {
 
   var cmd = args[0];
 
+  var realpath = window.location.origin + path;
+  if (path !== '/') {
+    realpath = realpath + '/';
+  }
+
   switch (cmd) {
     case 'cat':
-      var file = window.location.origin + path + arg;
+      var file = realpath + arg;
 			readfile(file, function(text) {
         if (text === '') {
           newline(display, 'cat: \'' + arg + '\': No such file or directory');
         } else {
           newline(display, text);
+        }
+      });
+    break;
+    case 'cd':
+      // TODO: handle . and .. and "cd foo/"
+      if (arg === '' || arg === '/') {
+        path = '/';
+        document.getElementById('prompt').innerText = userPromptBegin + path + userPromptEnd;
+        break;
+      }
+
+      // Strip extra / suffix
+      if (arg.slice(-1) === '/') {
+        arg = arg.slice(0, arg.length - 1);
+      }
+
+      var newpath = realpath + arg; 
+			readfile(newpath, function(text) {
+        if (text === '') {
+          newline(display, 'cd: \'' + arg + '\': No such file or directory');
+        } else {
+          // Change path
+          if (path !== '/') {
+            path = path + '/' + arg;
+          } else {
+            path = path + arg;
+          }
+          document.getElementById('prompt').innerText = userPromptBegin + path + userPromptEnd;
+          newline(display, '');
         }
       });
     break;
@@ -61,7 +97,7 @@ function executeCommand(display, cmdstr) {
       newline(display, arg);
     break;
     case 'ls':
-      var dir = window.location.origin + path + arg;
+      var dir = realpath + arg;
 
       readfile(dir, function(content) {
 
@@ -131,7 +167,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enter
     case 13:
       var p = document.createElement('p');
-      p.innerText = userPrompt + text.innerText;
+      if (path !== '/' && path.slice(-1) === '/') {
+       p.innerText = userPromptBegin + path.slice(0, path.length - 1) + userPromptEnd + text.innerText;
+      } else {
+       p.innerText = userPromptBegin + path + userPromptEnd + text.innerText;
+      }
 
       display.appendChild(p);
       executeCommand(display, text.innerText);
