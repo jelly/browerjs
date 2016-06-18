@@ -137,8 +137,6 @@ function cursorBlink() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // FIXME: those globals..
-  var display = document.getElementById('display');
   var text = document.getElementById('text');
   var interval = setInterval(cursorBlink, 800);
 
@@ -160,6 +158,8 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   document.onkeypress = function(event) {
+    var display = document.getElementById('display');
+
     clearInterval(interval);
     document.getElementById('cursor').className = 'cursor-on';
 
