@@ -113,8 +113,8 @@ function executeCommand(display, cmdstr) {
 
         if (content !== '') {
           var text = '';
-          parser = new DOMParser();
-          htmlDoc = parser.parseFromString(content, 'text/html');
+          var parser = new DOMParser();
+          var htmlDoc = parser.parseFromString(content, 'text/html');
 
           var elements = htmlDoc.getElementsByTagName('a');
           for (var i = 0; i < elements.length; i++) {
